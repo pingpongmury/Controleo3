@@ -93,6 +93,7 @@
 #define SCREEN_CHOOSE_PROFILE          14
 #define SCREEN_LEARNING                15
 #define SCREEN_RESULTS                 16
+#define SCREEN_SLEEP                   17
 
 // When displaying edit arrow on the screen
 #define ONE_SETTING                    0
