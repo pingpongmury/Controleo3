@@ -67,7 +67,7 @@ redraw:
           case 0: screen = SCREEN_REFLOW; break;
           case 1: screen = SCREEN_BAKE; break;
           case 2: screen = SCREEN_SETTINGS; break;
-          case 99: enterSleep();
+          case 99: enterSleep(); goto redraw;
         }
         break;
 
@@ -88,7 +88,7 @@ redraw:
           case 3: screen = SCREEN_HOME; break;
           case 4: showHelp(SCREEN_BAKE); goto redraw;
           case 5: screen = SCREEN_EDIT_BAKE1; break;
-          case 99: enterSleep();
+          case 99: enterSleep(); goto redraw;
         }
         break;
                 
@@ -147,7 +147,7 @@ redraw:
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_EDIT_BAKE1); goto redraw;
             case 7: screen = SCREEN_EDIT_BAKE2;
-            case 99: enterSleep();
+            case 99: enterSleep(); goto redraw;
           }
           if (screen != SCREEN_EDIT_BAKE1)
             break;
@@ -193,7 +193,7 @@ redraw:
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_EDIT_BAKE2); goto redraw;
             case 7: screen = SCREEN_BAKE;
-            case 99: enterSleep();
+            case 99: enterSleep(); goto redraw;
           }
           if (screen != SCREEN_EDIT_BAKE2)
             break;
@@ -224,7 +224,7 @@ redraw:
           case 2: screen = SCREEN_HOME; break;
           case 3: screen = SCREEN_HOME; break;
           case 4: showHelp(SCREEN_REFLOW); goto redraw;
-          case 99: enterSleep();
+          case 99: enterSleep(); goto redraw;
         }
         break;
                 
@@ -287,7 +287,7 @@ redraw:
             case 4: screen = SCREEN_REFLOW; break;
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_CHOOSE_PROFILE); goto redraw;
-            case 99: enterSleep();
+            case 99: enterSleep(); goto redraw;
           }
           if (screen != SCREEN_CHOOSE_PROFILE || !prefs.numProfiles)
             break;
@@ -316,7 +316,7 @@ redraw:
           case 6:
           case 7: screen = SCREEN_HOME; break;
           case 8: showHelp(SCREEN_SETTINGS); goto redraw;
-          case 99: enterSleep();
+          case 99: enterSleep(); goto redraw;
         }
         break;
         
@@ -964,5 +964,4 @@ void enterSleep(){
     delay(25);
   // Reset the screen to white and trigger a redraw after input detected
   tft.fillScreen(WHITE);
-  goto redraw;
 }
