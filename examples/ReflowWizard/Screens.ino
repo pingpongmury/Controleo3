@@ -67,6 +67,7 @@ redraw:
           case 0: screen = SCREEN_REFLOW; break;
           case 1: screen = SCREEN_BAKE; break;
           case 2: screen = SCREEN_SETTINGS; break;
+          case 99: enterSleep();
         }
         break;
 
@@ -87,6 +88,7 @@ redraw:
           case 3: screen = SCREEN_HOME; break;
           case 4: showHelp(SCREEN_BAKE); goto redraw;
           case 5: screen = SCREEN_EDIT_BAKE1; break;
+          case 99: enterSleep();
         }
         break;
                 
@@ -145,6 +147,7 @@ redraw:
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_EDIT_BAKE1); goto redraw;
             case 7: screen = SCREEN_EDIT_BAKE2;
+            case 99: enterSleep();
           }
           if (screen != SCREEN_EDIT_BAKE1)
             break;
@@ -190,6 +193,7 @@ redraw:
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_EDIT_BAKE2); goto redraw;
             case 7: screen = SCREEN_BAKE;
+            case 99: enterSleep();
           }
           if (screen != SCREEN_EDIT_BAKE2)
             break;
@@ -220,6 +224,7 @@ redraw:
           case 2: screen = SCREEN_HOME; break;
           case 3: screen = SCREEN_HOME; break;
           case 4: showHelp(SCREEN_REFLOW); goto redraw;
+          case 99: enterSleep();
         }
         break;
                 
@@ -282,6 +287,7 @@ redraw:
             case 4: screen = SCREEN_REFLOW; break;
             case 5: screen = SCREEN_HOME; break;
             case 6: showHelp(SCREEN_CHOOSE_PROFILE); goto redraw;
+            case 99: enterSleep();
           }
           if (screen != SCREEN_CHOOSE_PROFILE || !prefs.numProfiles)
             break;
@@ -310,6 +316,7 @@ redraw:
           case 6:
           case 7: screen = SCREEN_HOME; break;
           case 8: showHelp(SCREEN_SETTINGS); goto redraw;
+          case 99: enterSleep();
         }
         break;
         
@@ -342,7 +349,7 @@ redraw:
           }
 
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0: onOff = 1 - onOff;
                     break;
             case 1: setOutput(output, 0);
@@ -392,7 +399,7 @@ redraw:
           displayString(20, LINE(1), FONT_9PT_BLACK_ON_WHITE, (char *) longOutputDescription[prefs.outputType[output]]);
 
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0: prefs.outputType[output] = (prefs.outputType[output] + NO_OF_TYPES - 1) % NO_OF_TYPES;
                     savePrefs();
                     break;
@@ -434,7 +441,7 @@ redraw:
           setServoPosition(prefs.servoOpenDegrees, 1000);
 
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0: 
               if (prefs.servoOpenDegrees > 0) {
                 prefs.servoOpenDegrees -= 5;
@@ -478,7 +485,7 @@ redraw:
           setServoPosition(prefs.servoClosedDegrees, 1000);
 
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0: 
               if (prefs.servoClosedDegrees > 0) {
                 prefs.servoClosedDegrees -= 5;
@@ -527,7 +534,7 @@ redraw:
           }
 
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0:
             case 1:
               prefs.lineVoltageFrequency = 1 - prefs.lineVoltageFrequency;
@@ -565,7 +572,7 @@ redraw:
         while (1) {
           displayString(prefs.logToSDCard? 140:179, LINE(1)+10, FONT_9PT_BLACK_ON_WHITE, prefs.logToSDCard? (char *) "Write to SD card" : (char *) "No logging");
 
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0:
             case 1:
               prefs.logToSDCard = 1 - prefs.logToSDCard;
@@ -671,7 +678,7 @@ redraw:
 
         while (1) {
           // Act on the tap
-          switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+          switch(getTap(NO_SLEEP)) {
             case 0:
               if (bypassPower) {
                 bypassPower--;
@@ -779,7 +786,7 @@ redraw:
         drawNavigationButtons(false, true);
 
         // Act on the tap
-        switch(getTap(SHOW_TEMPERATURE_IN_HEADER)) {
+        switch(getTap(NO_SLEEP)) {
           case 0: learn(); break;
           case 1: screen = SCREEN_SETTINGS; break;
           case 2: screen = SCREEN_HOME; break;
@@ -946,4 +953,16 @@ uint8_t mapValue(uint16_t value, uint16_t map[])
   return i;
 } 
 
-
+void enterSleep(){
+  // Set the entire screen to Black
+  tft.fillScreen(BLACK);
+  // Clear the existing touch targets and add one that takes up the entire screen
+  clearTouchTargets();
+  defineTouchArea(0, 0, 479, 319);
+  // Wait for any tap input to exit sleep
+  while(getTap(CHECK_FOR_TAP_THEN_EXIT) == -1)
+    delay(25);
+  // Reset the screen to white and trigger a redraw after input detected
+  tft.fillScreen(WHITE);
+  goto redraw;
+}
