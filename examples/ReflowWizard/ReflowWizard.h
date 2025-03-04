@@ -3,7 +3,7 @@
 // Build a reflow oven: https://whizoo.com
 
 
-#define CONTROLEO3_VERSION             "1.5"
+#define CONTROLEO3_VERSION             "1.6"
 
 
 // Fonts
@@ -194,7 +194,8 @@ const uint8_t bakePhaseStrPosition[] = {190, 202, 198, 128, 128, 0};
 #define DONT_SHOW_TEMPERATURE          0
 #define SHOW_TEMPERATURE_IN_HEADER     1
 #define CHECK_FOR_TAP_THEN_EXIT        2
-#define NO_SLEEP                       3
+#define SHOW_TEMPERATURE_NO_SLEEP      3
+#define DONT_SHOW_TEMP_NO_SLEEP        4
 
 // Profiles
 #define MAX_PROFILE_NAME_LENGTH        31
@@ -297,4 +298,3 @@ struct Controleo3Prefs {
 
   uint8_t   spare[96];                        // Spare bytes that are initialized to zero.  Aids future expansion
 } prefs;
-
