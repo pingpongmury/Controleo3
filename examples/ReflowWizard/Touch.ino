@@ -336,9 +336,10 @@ void defineTouchArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 
 int8_t getTap(uint8_t mode)
 {
-  int16_t x, y, sleepCounter = 0;
+  int16_t x, y;
+  int32_t sleepCounter = 0;
   static uint32_t timeOfLastTemperatureUpdate = 0;
-  boolean showTemperatureInHeader = (mode == SHOW_TEMPERATURE_IN_HEADER || NO_SLEEP);
+  boolean showTemperatureInHeader = (mode == SHOW_TEMPERATURE_IN_HEADER);
 
   // Show the temperature in the header as soon as possible
   if (showTemperatureInHeader && drawTemperatureOnScreenNow) {
@@ -373,14 +374,18 @@ int8_t getTap(uint8_t mode)
       // Call the callback routine
       touchCallback();
       delay(1);
+      SerialUSB.println(sleepCounter);
+
       // If sleeping is disabled, keep looping without incrementing counter
-      if(NO_SLEEP)
+      if(mode == SHOW_TEMPERATURE_NO_SLEEP || mode == DONT_SHOW_TEMP_NO_SLEEP)
         continue;
+
       // If no touch within SLEEP_TIME, trigger enterSleep in Screens.ino
+      sleepCounter++;
       if(sleepCounter > SLEEP_TIME){
-        sleepCounter++;
         return 99;
       }
+
       // Otherwise keep looping
       continue;
     }
@@ -457,4 +462,3 @@ void displayTemperatureInHeader()
     displayFixedWidthString(351, 11, str, 9, FONT_9PT_BLACK_ON_WHITE_FIXED);
   }
 }
-
