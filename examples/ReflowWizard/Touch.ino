@@ -375,7 +375,7 @@ int8_t getTap(uint8_t mode)
       delay(1);
       // If sleeping is disabled, keep looping without incrementing counter
       if(NO_SLEEP)
-        continue
+        continue;
       // If no touch within SLEEP_TIME, trigger enterSleep in Screens.ino
       if(sleepCounter > SLEEP_TIME){
         sleepCounter++;
