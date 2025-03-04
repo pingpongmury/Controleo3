@@ -194,6 +194,7 @@ const uint8_t bakePhaseStrPosition[] = {190, 202, 198, 128, 128, 0};
 #define DONT_SHOW_TEMPERATURE          0
 #define SHOW_TEMPERATURE_IN_HEADER     1
 #define CHECK_FOR_TAP_THEN_EXIT        2
+#define NO_SLEEP                       3
 
 // Profiles
 #define MAX_PROFILE_NAME_LENGTH        31
