@@ -5,6 +5,7 @@
 
 #define MAX_CALIBRATION_TIME  60000  // 60 seconds
 #define MAX_TAP_TARGETS    20
+#define SLEEP_TIME      60000 // 60 seconds
 //#define SHOW_TAP_TARGETS
 
 static struct  {
@@ -335,9 +336,9 @@ void defineTouchArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 
 int8_t getTap(uint8_t mode)
 {
-  int16_t x, y;
+  int16_t x, y, sleepCounter = 0;
   static uint32_t timeOfLastTemperatureUpdate = 0;
-  boolean showTemperatureInHeader = (mode == SHOW_TEMPERATURE_IN_HEADER);
+  boolean showTemperatureInHeader = (mode == SHOW_TEMPERATURE_IN_HEADER || NO_SLEEP);
 
   // Show the temperature in the header as soon as possible
   if (showTemperatureInHeader && drawTemperatureOnScreenNow) {
@@ -372,9 +373,18 @@ int8_t getTap(uint8_t mode)
       // Call the callback routine
       touchCallback();
       delay(1);
+      // If sleeping is disabled, keep looping without incrementing counter
+      if(NO_SLEEP)
+        continue
+      // If no touch within SLEEP_TIME, trigger enterSleep in Screens.ino
+      if(sleepCounter > SLEEP_TIME){
+        sleepCounter++;
+        return 99;
+      }
+      // Otherwise keep looping
       continue;
     }
-
+    
     // See if the tap is in a valid area
     for (uint8_t i=0; i< touchNumTargets; i++) {
       if (x < tapTarget[i].left || x > tapTarget[i].right)
