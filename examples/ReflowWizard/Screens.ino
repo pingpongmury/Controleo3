@@ -349,7 +349,7 @@ redraw:
           }
 
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0: onOff = 1 - onOff;
                     break;
             case 1: setOutput(output, 0);
@@ -399,7 +399,7 @@ redraw:
           displayString(20, LINE(1), FONT_9PT_BLACK_ON_WHITE, (char *) longOutputDescription[prefs.outputType[output]]);
 
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0: prefs.outputType[output] = (prefs.outputType[output] + NO_OF_TYPES - 1) % NO_OF_TYPES;
                     savePrefs();
                     break;
@@ -441,7 +441,7 @@ redraw:
           setServoPosition(prefs.servoOpenDegrees, 1000);
 
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0: 
               if (prefs.servoOpenDegrees > 0) {
                 prefs.servoOpenDegrees -= 5;
@@ -485,7 +485,7 @@ redraw:
           setServoPosition(prefs.servoClosedDegrees, 1000);
 
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0: 
               if (prefs.servoClosedDegrees > 0) {
                 prefs.servoClosedDegrees -= 5;
@@ -534,7 +534,7 @@ redraw:
           }
 
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0:
             case 1:
               prefs.lineVoltageFrequency = 1 - prefs.lineVoltageFrequency;
@@ -572,7 +572,7 @@ redraw:
         while (1) {
           displayString(prefs.logToSDCard? 140:179, LINE(1)+10, FONT_9PT_BLACK_ON_WHITE, prefs.logToSDCard? (char *) "Write to SD card" : (char *) "No logging");
 
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0:
             case 1:
               prefs.logToSDCard = 1 - prefs.logToSDCard;
@@ -635,7 +635,7 @@ redraw:
 
         drawNavigationButtons(false, true);
 
-        switch(getTap(DONT_SHOW_TEMPERATURE)) {
+        switch(getTap(DONT_SHOW_TEMP_NO_SLEEP)) {
           case 0: screen = SCREEN_SETTINGS; break;
           case 1: screen = SCREEN_HOME; break;
           case 2: showHelp(SCREEN_ABOUT); goto redraw;
@@ -678,7 +678,7 @@ redraw:
 
         while (1) {
           // Act on the tap
-          switch(getTap(NO_SLEEP)) {
+          switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
             case 0:
               if (bypassPower) {
                 bypassPower--;
@@ -786,7 +786,7 @@ redraw:
         drawNavigationButtons(false, true);
 
         // Act on the tap
-        switch(getTap(NO_SLEEP)) {
+        switch(getTap(SHOW_TEMPERATURE_NO_SLEEP)) {
           case 0: learn(); break;
           case 1: screen = SCREEN_SETTINGS; break;
           case 2: screen = SCREEN_HOME; break;
@@ -960,8 +960,9 @@ void enterSleep(){
   clearTouchTargets();
   defineTouchArea(0, 0, 479, 319);
   // Wait for any tap input to exit sleep
-  while(getTap(CHECK_FOR_TAP_THEN_EXIT) == -1)
+  while(getTap(CHECK_FOR_TAP_THEN_EXIT) == -1){
     delay(25);
+  }
   // Reset the screen to white and trigger a redraw after input detected
   tft.fillScreen(WHITE);
 }
